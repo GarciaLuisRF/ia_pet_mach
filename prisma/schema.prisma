@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  name         String      @unique
+  lastname     String?   
+  isAdmin      Boolean     @default(false)
+  email        String      @unique @db.String
+  password     String
+  phoneNumber  String?
+  instagramUrl String?
+  facebookUrl  String?
+  photoUrl     String?
+  community    community[]
+  comments     comments[]
+  reports      reports[]
+  survey       survey?
+}
+
+model animals {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  age           Float
+  size          Float
+  training      Float
+  specie        String
+  breed         String
+  color         String
+  temperament   Float 
+  maintenance   Float  
+  timeNeeded    Float  
+  space_Needed  Float
+  weather       Float
+  total_plus    Float
+
+  posts        posts?
+}
+
+
+// Checar si en vez de hacer una relacion de muchos a muchos, hacer un atributo enum de colores
+
+
+model community {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  text      String
+  createdAt DateTime
+  userEmail String?  @db.String
+
+  user   user?   @relation(fields: [userEmail], references: [email])
+  comments comments[]
+}
+
+model comments {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  text        String
+  createdAt   DateTime
+  userEmail   String?  @db.String @map("_userEmail")
+  communityId String?  @db.ObjectId
+
+  user      user?      @relation(fields: [userEmail], references: [email])
+  community community? @relation(fields: [communityId], references: [id])
+}
+
+model reports {
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  userEmail String? @db.String @map("_userEmail")
+  postId String? @db.ObjectId
+
+  user user?  @relation(fields: [userEmail], references: [email])
+  post posts? @relation(fields: [postId], references: [id])
+}
+
+model posts {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  adopted     Boolean @default(false)
+  description String
+  active      Boolean
+  craetedAt   DateTime
+  urlImagen   String?
+  animalId    String? @unique @db.ObjectId
+  userEmail   String? @db.String @map("_userEmail")
+
+  animal       animals?       @relation(fields: [animalId], references: [id])
+  reports      reports[]
+  deletedPosts deletedPosts[]
+}
+
+model deletedPosts {
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  postId  String? @db.ObjectId
+  adminId String? @db.ObjectId
+
+  posts posts?  @relation(fields: [postId], references: [id])
+  admin admins? @relation(fields: [adminId], references: [id])
+}
+
+model admins {
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  username     String         @unique
+  password     String
+  deletedPosts deletedPosts[]
+}
+
+model survey {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  R_age         Float
+  R_size        Float
+  R_species     String[]
+  R_breed       String[]
+  R_space       Float
+  R_weather     Float
+  R_color       String[]
+  R_temperament Float
+  R_cost        Float
+  R_time        Float
+  R_training    Float
+  R_total_plus  Float
+
+  userEmail String? @unique @db.String
+  user   user?   @relation(fields: [userEmail], references: [email])
+}
