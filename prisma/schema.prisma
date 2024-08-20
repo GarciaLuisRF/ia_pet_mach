@@ -36,7 +36,7 @@ model animals {
   maintenance   Float  
   timeNeeded    Float  
   space_Needed  Float
-  weather       Float
+  weather       Float 
   total_plus    Float
 
   posts        posts?
@@ -120,7 +120,7 @@ model survey {
   R_cost        Float
   R_time        Float
   R_training    Float
-  R_total_plus  Float
+  total_plus  Float
 
   userEmail String? @unique @db.String
   user   user?   @relation(fields: [userEmail], references: [email])
