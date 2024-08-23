@@ -18,6 +18,8 @@ model user {
   instagramUrl String?
   facebookUrl  String?
   photoUrl     String?
+  U_age        Float
+  experience   Float
   community    community[]
   comments     comments[]
   reports      reports[]
@@ -36,7 +38,8 @@ model animals {
   maintenance   Float  
   timeNeeded    Float  
   space_Needed  Float
-  weather       Float 
+  weather       Float
+  experienceNeeded  Float 
   total_plus    Float
 
   posts        posts?
@@ -81,7 +84,7 @@ model posts {
   adopted     Boolean @default(false)
   description String
   active      Boolean
-  craetedAt   DateTime
+  createdAt   DateTime
   urlImagen   String?
   animalId    String? @unique @db.ObjectId
   userEmail   String? @db.String @map("_userEmail")
